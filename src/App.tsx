@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 //@ts-ignore
-import LitJsSdk from 'lit-js-sdk/build/index.node.js';
+import * as LitJsSdk from '@lit-protocol/lit-node-client'
 
 function App() {
   const [resp, setResp] = useState('');
@@ -12,10 +12,14 @@ function App() {
     // this will get it from metamask or any browser wallet
     const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "mumbai" });
   
-    const litNodeClient = new LitJsSdk.LitNodeClient({ litNetwork: "serrano" });
-    await litNodeClient.connect();
+    const client = new LitJsSdk.LitNodeClient({
+      litNetwork: 'serrano',
+      debug: true,
+    });
+    
+    await client.connect();
   
-    const signatures = await litNodeClient.executeJs({
+    const signatures = await client.executeJs({
       ipfsId: process.env.REACT_APP_IPFS_CID,
       authSig,
       // all jsParams can be used anywhere in your Lit Action Code
