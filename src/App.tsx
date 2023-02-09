@@ -18,6 +18,20 @@ function App() {
     });
     
     await client.connect();
+
+    const accessControlConditions = [
+      {
+        contractAddress: "",
+        standardContractType: "",
+        chain: "mumbai",
+        method: "eth_getBalance",
+        parameters: [":userAddress", "latest"],
+        returnValueTest: {
+          comparator: ">=",
+          value: "100000000000000000", // 0.1 ETH
+        },
+      },
+    ];
   
     const signatures = await client.executeJs({
       ipfsId: process.env.REACT_APP_IPFS_CID,
@@ -25,10 +39,9 @@ function App() {
       // all jsParams can be used anywhere in your Lit Action Code
       jsParams: {
         // this is the string "Hello World" for testing
-        toSign: [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100],
-        publicKey:
-          process.env.REACT_APP_PUBLIC_KEY,
-        sigName: process.env.REACT_APP_SIG_NAME,
+        conditions: accessControlConditions,
+        authSig,
+        chain: 'mumbai',
       },
     })
   };
